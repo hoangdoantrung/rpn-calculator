@@ -64,6 +64,7 @@ namespace RpnApi.Controllers
         /// <param name="id">Stack's id.</param>
         /// <returns>True if succeed.</returns>
         [HttpPut]
+        [Route("{id}")]
         [SwaggerResponse(200, "Clear stack sucessfully", typeof(bool))]
         public IActionResult Clear(int id)
         {
@@ -81,6 +82,7 @@ namespace RpnApi.Controllers
         /// <param name="id">Stack's id.</param>
         /// <returns>True if succeed.</returns>
         [HttpDelete]
+        [Route("{id}")]
         [SwaggerResponse(200, "Delete stack sucessfully", typeof(bool))]
         public IActionResult Delete(int id)
         {
@@ -99,6 +101,7 @@ namespace RpnApi.Controllers
         /// /// <param name="operand">Operand to push.</param>
         /// <returns>Stack with new operand.</returns>
         [HttpPatch]
+        [Route("{id}")]
         [SwaggerResponse(200, "Push an operand into stack sucessfully", typeof(StackModel))]
         public IActionResult Push(int id, decimal operand)
         {
