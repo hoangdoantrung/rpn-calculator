@@ -1,4 +1,5 @@
-﻿using RpnInfrastructures.Logging;
+﻿using RpnInfrastructures.Exceptions;
+using RpnInfrastructures.Logging;
 using RpnModels;
 using System;
 using System.Collections.Concurrent;
@@ -21,12 +22,52 @@ namespace RpnServices
 
         public bool Clear(int id)
         {
-            throw new NotImplementedException();
+            if (!_stacks.Value.TryGetValue(id, out var stack))
+            {
+                throw new NotFoundException($"Could not find stack with id:{id}");
+            }
+            _stacks.Value.AddOrUpdate(id, new ConcurrentStack<decimal>(), (x,y) => new ConcurrentStack<decimal>());
+
+            _apiLogger.Fuctional("Clear");
+            return true;
         }
 
         public StackModel CreateOperator(int id, Operator op)
         {
-            throw new NotImplementedException();
+            if (!_stacks.Value.TryGetValue(id, out var stack))
+            {
+                throw new NotFoundException($"Could not find stack with id:{id}");
+            }
+            if (!stack.TryPop(out var lastOperand))
+            {
+                throw new InvalidRequestException($"Could not apply operator {op} because lack of operand.");
+            }
+            if (!stack.TryPop(out var firstOperand))
+            {
+                throw new InvalidRequestException($"Could not apply operator {op} because lack of operand.");
+            }
+            switch (op)
+            {
+                case Operator.Add:
+                    stack.Push(firstOperand + lastOperand);
+                    break;
+                case Operator.Substract:
+                    stack.Push(firstOperand - lastOperand);
+                    break;
+                case Operator.Multiply:
+                    stack.Push(firstOperand * lastOperand);
+                    break;
+                case Operator.Divide:
+                    stack.Push(firstOperand / lastOperand);
+                    break;
+            }
+
+            _apiLogger.Fuctional("CreateOperator");
+            return new StackModel()
+            {
+                Id = id,
+                Operands = stack.ToArray()
+            };
         }
 
         public int CreateStack()
@@ -45,23 +86,56 @@ namespace RpnServices
             return newId;
         }
 
+        public bool Delete(int id)
+        {
+            if (!_stacks.Value.TryGetValue(id, out var _))
+            {
+                return true;
+            }
+            return _stacks.Value.TryRemove(id, out var _);
+        }
+
+        public IList<StackModel> GetAll()
+        {
+            // TODO: add pagination
+            return _stacks.Value.Select(s => new StackModel() 
+            {
+                Id = s.Key,
+                Operands = s.Value.ToArray()
+            }).ToList();
+        }
+
         public StackModel GetById(int id)
         {
             if (!_stacks.Value.TryGetValue(id, out var stack))
             {
-                // TODO: should throw NotFoundException then return 404 to client
-                return null;
+                throw new NotFoundException($"Could not find stack with id:{id}");
             }
+
+            _apiLogger.Fuctional("GetById");
+
             return new StackModel() 
             { 
                 Id = id,
-                Operands = stack.ToList()
+                Operands = stack.ToArray()
             };
         }
 
         public StackModel Push(int id, decimal item)
         {
-            throw new NotImplementedException();
+            if (!_stacks.Value.TryGetValue(id, out var stack))
+            {
+                throw new NotFoundException($"Could not find stack with id:{id}");
+            }
+            stack.Push(item);
+
+            _apiLogger.Fuctional("Push");
+
+            return new StackModel()
+            {
+                Id = id,
+                Operands = stack.ToArray()
+            };
         }
     }
 }

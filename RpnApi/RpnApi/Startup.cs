@@ -7,6 +7,10 @@ using Microsoft.OpenApi.Models;
 using RpnInfrastructures.Logging;
 using RpnInfrastructures.Middlewares;
 using RpnServices;
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RpnApi
 {
@@ -34,10 +38,18 @@ namespace RpnApi
                 options.SubstituteApiVersionInUrl = true;
             });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options => 
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RpnApi", Version = "v1" });
+                var filePath = Path.Combine(AppContext.BaseDirectory, "RpnApi.xml");
+                c.IncludeXmlComments(filePath);
             });
 
             services.AddSingleton<IStackService, StackService>();

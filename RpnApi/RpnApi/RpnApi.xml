@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RpnApi</name>
+    </assembly>
+    <members>
+        <member name="M:RpnApi.Controllers.StacksController.CreateStack">
+            <summary>
+            Create a stack.
+            </summary>
+            <returns>New stack id.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.GetById(System.Int32)">
+            <summary>
+            Get a stack by id.
+            </summary>
+            <param name="id">Stack's id.</param>
+            <returns>Stack with given id.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.GetAll">
+            <summary>
+            Get all stacks.
+            </summary>
+            <returns>Stack with given id.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.Clear(System.Int32)">
+            <summary>
+            Clear operands of a stack.
+            </summary>
+            <param name="id">Stack's id.</param>
+            <returns>True if succeed.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.Delete(System.Int32)">
+            <summary>
+            Delete a stack.
+            </summary>
+            <param name="id">Stack's id.</param>
+            <returns>True if succeed.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.Push(System.Int32,System.Decimal)">
+            <summary>
+            Push an operand into stack.
+            </summary>
+            <param name="id">Stack's id.</param>
+            /// <param name="operand">Operand to push.</param>
+            <returns>Stack with new operand.</returns>
+        </member>
+        <member name="M:RpnApi.Controllers.StacksController.CreateOperator(System.Int32,RpnModels.Operator)">
+            <summary>
+            Create an operator in stack.
+            </summary>
+            <param name="id">Stack's id.</param>
+            /// <param name="op">Operator to create.</param>
+            <returns>Stack with new operator.</returns>
+        </member>
+    </members>
+</doc>
