@@ -3,8 +3,8 @@ using RpnModels;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RpnServices
 {
@@ -19,12 +19,12 @@ namespace RpnServices
             _apiLogger = apiLogger;
         }
 
-        public Task<bool> Clear(int id)
+        public bool Clear(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> CreateOperator(int id, Operator op)
+        public StackModel CreateOperator(int id, Operator op)
         {
             throw new NotImplementedException();
         }
@@ -45,15 +45,23 @@ namespace RpnServices
             return newId;
         }
 
-        public Task<StackModel> GetById(int id)
+        public StackModel GetById(int id)
+        {
+            if (!_stacks.Value.TryGetValue(id, out var stack))
+            {
+                // TODO: should throw NotFoundException then return 404 to client
+                return null;
+            }
+            return new StackModel() 
+            { 
+                Id = id,
+                Operands = stack.ToList()
+            };
+        }
+
+        public StackModel Push(int id, decimal item)
         {
             throw new NotImplementedException();
         }
-
-        public Task<StackModel> Push(int id, decimal item)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
